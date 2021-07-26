@@ -2,15 +2,21 @@ version: 2
 
 models:
   - name: stg_customers
+    description: Ein eindeutiger Kunde je Zeile
     columns: 
       - name: customer_id
+        description: Dies ist der technische PK des Kunden-Datensatzes.
         tests:
           - unique
           - not_null
-
   - name: stg_orders
     columns: 
-      - name: status
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+      - name: status  
+        description: '{{ doc("order_status") }}'        
         tests:
           - accepted_values:
               values:
@@ -19,3 +25,8 @@ models:
                 - returned
                 - placed
                 - return_pending
+      - name: customer_id
+        tests:
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
